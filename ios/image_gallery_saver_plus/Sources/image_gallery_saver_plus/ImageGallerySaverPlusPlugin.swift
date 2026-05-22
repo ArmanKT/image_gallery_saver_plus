@@ -1,10 +1,11 @@
 import Flutter
 import UIKit
 import Photos
+
 public class ImageGallerySaverPlusPlugin: NSObject, FlutterPlugin {
     let errorMessage = "Failed to save, please check whether the permission is enabled"
     
-    var result: FlutterResult?;
+    var result: FlutterResult?
 
     public static func register(with registrar: FlutterPluginRegistrar) {
       let channel = FlutterMethodChannel(name: "image_gallery_saver_plus", binaryMessenger: registrar.messenger())
@@ -34,8 +35,8 @@ public class ImageGallerySaverPlusPlugin: NSObject, FlutterPlugin {
         } else {
             if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(path)) {
                 saveVideo(path, isReturnImagePath: isReturnFilePath)
-            }else{
-                self.saveResult(isSuccess:false,error:self.errorMessage)
+            } else {
+                self.saveResult(isSuccess: false, error: self.errorMessage)
             }
         }
       } else {
@@ -51,7 +52,7 @@ public class ImageGallerySaverPlusPlugin: NSObject, FlutterPlugin {
         var videoIds: [String] = []
         
         PHPhotoLibrary.shared().performChanges( {
-            let req = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: URL.init(fileURLWithPath: path))
+            let req = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: URL(fileURLWithPath: path))
             if let videoId = req?.placeholderForCreatedAsset?.localIdentifier {
                 videoIds.append(videoId)
             }
@@ -120,7 +121,7 @@ public class ImageGallerySaverPlusPlugin: NSObject, FlutterPlugin {
         var imageIds: [String] = []
         
         PHPhotoLibrary.shared().performChanges( {
-            let req = PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: URL(string: url)!)
+            let req = PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: URL(fileURLWithPath: url))
             if let imageId = req?.placeholderForCreatedAsset?.localIdentifier {
                 imageIds.append(imageId)
             }
@@ -146,7 +147,7 @@ public class ImageGallerySaverPlusPlugin: NSObject, FlutterPlugin {
         })
     }
     
-    /// finish saving，if has error，parameters error will not nill
+    /// finish saving，if has error, parameters error will not be nil
     @objc func didFinishSavingImage(image: UIImage, error: NSError?, contextInfo: UnsafeMutableRawPointer?) {
         saveResult(isSuccess: error == nil, error: error?.description)
     }
@@ -185,9 +186,6 @@ public struct SaveResultModel: Encodable {
     func toDic() -> [String:Any]? {
         let encoder = JSONEncoder()
         guard let data = try? encoder.encode(self) else { return nil }
-        if (!JSONSerialization.isValidJSONObject(data)) {
-            return try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:Any]
-        }
-        return nil
+        return try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:Any]
     }
 }
