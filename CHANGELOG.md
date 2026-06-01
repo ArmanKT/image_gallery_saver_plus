@@ -4,7 +4,7 @@
 
 - Added Swift Package Manager (SPM) support for iOS alongside CocoaPods.
 - Raised minimum iOS support to 13.0.
-- Raised Flutter SDK support to 3.41.0+ and Dart SDK support to >=3.10.0.
+- Raised Flutter SDK support to 3.38.0+ and Dart SDK support to >=3.10.0.
 - Updated Android Gradle Plugin to 8.13.2 and Gradle wrapper to 8.14.5.
 - Applied the Kotlin Android plugin to the Android plugin module and example app for current AGP compatibility.
 - Updated Android media saving for scoped storage by using pending MediaStore entries on Android 10 and newer.
