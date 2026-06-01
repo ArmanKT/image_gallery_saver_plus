@@ -1,41 +1,36 @@
 package com.example.image_gallery_saver_plus
 
-import androidx.annotation.NonNull
-import android.annotation.TargetApi
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Environment
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
-import io.flutter.embedding.engine.plugins.FlutterPlugin
+import android.webkit.MimeTypeMap
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import io.flutter.embedding.engine.plugins.FlutterPlugin
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
-import android.text.TextUtils
-import android.webkit.MimeTypeMap
-import java.io.OutputStream
 
 /** ImageGallerySaverPlusPlugin */
 class ImageGallerySaverPlusPlugin : FlutterPlugin, MethodCallHandler {
     private lateinit var methodChannel: MethodChannel
     private var applicationContext: Context? = null
 
-    override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         this.applicationContext = binding.applicationContext
         methodChannel = MethodChannel(binding.binaryMessenger, "image_gallery_saver_plus")
         methodChannel.setMethodCallHandler(this)
     }
 
-    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result): Unit {
+    override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
             "saveImageToGallery" -> {
                 val image = call.argument<ByteArray?>("imageBytes")
@@ -63,13 +58,13 @@ class ImageGallerySaverPlusPlugin : FlutterPlugin, MethodCallHandler {
         }
     }
 
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         applicationContext = null
-        methodChannel.setMethodCallHandler(null);
+        methodChannel.setMethodCallHandler(null)
     }
 
     private fun generateUri(extension: String = "", name: String? = null): Uri? {
-        var fileName = name ?: System.currentTimeMillis().toString()
+        val fileName = name ?: System.currentTimeMillis().toString()
         val mimeType = getMIMEType(extension)
         val isVideo = mimeType?.startsWith("video") == true
 
@@ -88,7 +83,7 @@ class ImageGallerySaverPlusPlugin : FlutterPlugin, MethodCallHandler {
                         else -> Environment.DIRECTORY_PICTURES
                     }
                 )
-                if (!TextUtils.isEmpty(mimeType)) {
+                if (mimeType != null) {
                     put(
                         when {
                             isVideo -> MediaStore.Video.Media.MIME_TYPE
@@ -96,29 +91,34 @@ class ImageGallerySaverPlusPlugin : FlutterPlugin, MethodCallHandler {
                         }, mimeType
                     )
                 }
+                put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
 
             applicationContext?.contentResolver?.insert(uri, values)
 
         } else {
-            // < android 10
-            val storePath =
-                Environment.getExternalStoragePublicDirectory(
-                    when {
-                        isVideo -> Environment.DIRECTORY_MOVIES
-                        else -> Environment.DIRECTORY_PICTURES
-                    }
-                ).absolutePath
-            val appDir = File(storePath).apply {
-                if (!exists()) {
-                    mkdir()
-                }
-            }
-
-            val file =
-                File(appDir, if (extension.isNotEmpty()) "$fileName.$extension" else fileName)
-            Uri.fromFile(file)
+            generateLegacyFileUri(isVideo, fileName, extension)
         }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun generateLegacyFileUri(isVideo: Boolean, fileName: String, extension: String): Uri {
+        val storePath =
+            Environment.getExternalStoragePublicDirectory(
+                when {
+                    isVideo -> Environment.DIRECTORY_MOVIES
+                    else -> Environment.DIRECTORY_PICTURES
+                }
+            ).absolutePath
+        val appDir = File(storePath).apply {
+            if (!exists()) {
+                mkdirs()
+            }
+        }
+
+        val file =
+            File(appDir, if (extension.isNotEmpty()) "$fileName.$extension" else fileName)
+        return Uri.fromFile(file)
     }
 
     /**
@@ -128,7 +128,7 @@ class ImageGallerySaverPlusPlugin : FlutterPlugin, MethodCallHandler {
      * @return file Mime Type
      */
     private fun getMIMEType(extension: String): String? {
-        return if (!TextUtils.isEmpty(extension)) {
+        return if (extension.isNotEmpty()) {
             MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.lowercase())
         } else {
             null
@@ -142,8 +142,26 @@ class ImageGallerySaverPlusPlugin : FlutterPlugin, MethodCallHandler {
      * @param fileUri file path
      */
     private fun sendBroadcast(context: Context, fileUri: Uri?) {
-        fileUri?.path?.let { path ->
+        fileUri?.takeIf { it.scheme == "file" }?.path?.let { path ->
             MediaScannerConnection.scanFile(context, arrayOf(path), null, null)
+        }
+    }
+
+    private fun finishPendingMedia(context: Context, fileUri: Uri?) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || fileUri == null) {
+            return
+        }
+        val values = ContentValues().apply {
+            put(MediaStore.MediaColumns.IS_PENDING, 0)
+        }
+        context.contentResolver.update(fileUri, values, null, null)
+    }
+
+    private fun deleteFailedMedia(context: Context, fileUri: Uri?) {
+        when (fileUri?.scheme) {
+            "file" -> fileUri.path?.let { File(it).delete() }
+            null -> return
+            else -> context.contentResolver.delete(fileUri, null, null)
         }
     }
 
@@ -160,29 +178,27 @@ class ImageGallerySaverPlusPlugin : FlutterPlugin, MethodCallHandler {
         val context = applicationContext
             ?: return SaveResultModel(false, null, "applicationContext null").toHashMap()
         var fileUri: Uri? = null
-        var fos: OutputStream? = null
         var success = false
         try {
             fileUri = generateUri("jpg", name = name)
             if (fileUri != null) {
-                fos = context.contentResolver.openOutputStream(fileUri)
-                if (fos != null) {
-                    println("ImageGallerySaverPlugin $quality")
-                    bmp.compress(Bitmap.CompressFormat.JPEG, quality, fos)
+                context.contentResolver.openOutputStream(fileUri)?.use { fos ->
+                    success = bmp.compress(Bitmap.CompressFormat.JPEG, quality.coerceIn(0, 100), fos)
                     fos.flush()
-                    success = true
                 }
             }
         } catch (e: IOException) {
-            SaveResultModel(false, null, e.toString()).toHashMap()
+            deleteFailedMedia(context, fileUri)
+            return SaveResultModel(false, null, e.toString()).toHashMap()
         } finally {
-            fos?.close()
             bmp.recycle()
         }
         return if (success) {
+            finishPendingMedia(context, fileUri)
             sendBroadcast(context, fileUri)
             SaveResultModel(fileUri.toString().isNotEmpty(), fileUri.toString(), null).toHashMap()
         } else {
+            deleteFailedMedia(context, fileUri)
             SaveResultModel(false, null, "saveImageToGallery fail").toHashMap()
         }
     }
@@ -222,13 +238,16 @@ class ImageGallerySaverPlusPlugin : FlutterPlugin, MethodCallHandler {
                 }
             }
         } catch (e: IOException) {
+            deleteFailedMedia(context, fileUri)
             return SaveResultModel(false, null, e.toString()).toHashMap()
         }
 
         return if (success) {
+            finishPendingMedia(context, fileUri)
             sendBroadcast(context, fileUri)
             SaveResultModel(true, fileUri.toString(), null).toHashMap()
         } else {
+            deleteFailedMedia(context, fileUri)
             SaveResultModel(false, null, "saveFileToGallery failed").toHashMap()
         }
     }
