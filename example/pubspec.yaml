@@ -2,10 +2,11 @@ name: image_gallery_saver_plus_example
 description: "Demonstrates how to use the image_gallery_saver_plus plugin."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ^3.5.4
+  sdk: '>=3.11.0 <4.0.0'
+  flutter: '>=3.41.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -16,10 +17,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  dio: ^5.8.0+1
-  path_provider: ^2.1.5  
-  fluttertoast: ^8.2.12
-  permission_handler: ^11.4.0
+  dio: ^5.9.2
+  path_provider: ^2.1.5
+  permission_handler: ^12.0.1
   image_gallery_saver_plus:
     # When depending on this package from a real application you should use:
     #   image_gallery_saver_plus: ^x.y.z
@@ -50,7 +50,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
