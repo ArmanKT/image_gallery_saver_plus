@@ -33,6 +33,59 @@ Add the following keys to your Info.plist file, located in <project root>/ios/Ru
  <application android:requestLegacyExternalStorage="true" .....>
  ```
 
+## API
+
+### `ImageGallerySaverPlus.saveImage(...)`
+Save raw image bytes to the gallery.
+
+| Parameter | Type | Default | Description |
+| --- | --- | --- | --- |
+| `imageBytes` | `Uint8List` | required | The image bytes to save. |
+| `quality` | `int` | `80` | JPEG compression quality (0–100). |
+| `name` | `String?` | `null` | Optional file name. |
+| `isReturnImagePathOfIOS` | `bool` | `false` | Return the saved file path on iOS. |
+| `creationDate` | `DateTime?` | `null` | **iOS only.** Sets the asset's creation date shown in Photos. See below. |
+
+### `ImageGallerySaverPlus.saveFile(...)`
+Save a PNG/JPG/JPEG image or a video file to the gallery.
+
+| Parameter | Type | Default | Description |
+| --- | --- | --- | --- |
+| `file` | `String` | required | Path to the local file to save. |
+| `name` | `String?` | `null` | Optional file name. |
+| `isReturnPathOfIOS` | `bool` | `false` | Return the saved file path on iOS. |
+| `creationDate` | `DateTime?` | `null` | **iOS only.** Sets the asset's creation date shown in Photos (works for both images and videos). See below. |
+
+## Setting the creation date (iOS)
+
+By default the gallery stamps saved media with the current date/time. Pass a
+`creationDate` to control the date that Photos displays for the asset — useful
+when re-saving media that was originally captured at an earlier time (e.g.
+downloaded backups, imported memories).
+
+```dart
+final result = await ImageGallerySaverPlus.saveImage(
+  imageBytes,
+  quality: 80,
+  name: "my_photo",
+  creationDate: DateTime(2020, 1, 1),
+);
+```
+
+```dart
+final result = await ImageGallerySaverPlus.saveFile(
+  savePath,
+  creationDate: DateTime.parse("2020-01-01T10:30:00"),
+);
+```
+
+Notes:
+- **iOS only.** On iOS, providing a `creationDate` imports the asset through
+  `PHPhotoLibrary` so the date is honored. When it is `null`, the legacy save
+  path is used and the asset gets the current date.
+- On Android the parameter is accepted but currently ignored; the asset keeps
+  the date it is saved.
+
 ## Example
 Saving an image from the internet, quality and name is option
 ``` dart

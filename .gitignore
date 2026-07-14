@@ -1,13 +1,92 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
 .DS_Store
-.dart_tool/
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+.cursor/
+migrate_working_dir/
 
-.packages
-.pub/
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
 .idea/
-.fvm/
 
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/DartDefines.xcconfig
+.dart_tool/
+flutter_sdk_cache/
+/sdk_cache/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
 pubspec.lock
 
-build/
+ios/Podfile.lock
+*.lock
+*.freezed.lock
 
-*.iml
+**/GeneratedPluginRegistrant.swift
+**/generated_plugin_registrant.cc
+**/generated_plugins.cmake
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+/ios/build
+/android/build
+
+*.g.dart
+*.freezed.dart
+*.gen.dart
+*.config.dart
+.vscode/
+
+# FVM Version Cache
+.fvm/
+.fvm/*
+/.fvmrc
+/scripts/build
+#lib/features/cloud_storage
+lib/app/global/theme/*.g.theme.dart
+scripts/input_translator.text
+.fvmrc
+.gemini/
+*.code-workspace
+build.yaml
+
+.agent/
+.claude/
+.gitnexus/
+.commandcode/
+.opencode/
+openspec/
+/AGENTS.md
+/ARCHITECTURE.md
+/CLAUDE.md
+/opencode.json
+.agents/
