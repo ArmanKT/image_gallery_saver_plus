@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class Utils {
-  static final GlobalKey<ScaffoldMessengerState> messengerKey = GlobalKey<ScaffoldMessengerState>();
+  static final GlobalKey<ScaffoldMessengerState> messengerKey =
+      GlobalKey<ScaffoldMessengerState>();
 
   static void toast(String msg) {
     messengerKey.currentState?.showSnackBar(
@@ -29,7 +30,9 @@ class PermissionUtil {
     return await androidPermissions.request();
   }
 
-  static Future<Map<Permission, PermissionStatus>> request(Permission permission) async {
+  static Future<Map<Permission, PermissionStatus>> request(
+    Permission permission,
+  ) async {
     final List<Permission> permissions = <Permission>[permission];
     return await permissions.request();
   }

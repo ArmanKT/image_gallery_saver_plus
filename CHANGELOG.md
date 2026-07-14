@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.1.0
+
+- Added an optional `creationDate` parameter to `saveImage` and `saveFile`.
+- Added iOS support for preserving custom creation dates for saved images and videos.
+- Lowered the minimum supported versions to Dart 3.9.2 and Flutter 3.35.6.
+
 ## 5.0.0
 
 - Added Swift Package Manager (SPM) support for iOS alongside CocoaPods.

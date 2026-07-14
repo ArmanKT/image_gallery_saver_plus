@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 class ImageGallerySaverPlus {
-  static const MethodChannel _channel = const MethodChannel('image_gallery_saver_plus');
+  static const MethodChannel _channel = const MethodChannel(
+    'image_gallery_saver_plus',
+  );
 
   /// save image to Gallery
   /// imageBytes can't null
@@ -19,13 +21,14 @@ class ImageGallerySaverPlus {
     bool isReturnImagePathOfIOS = false,
     DateTime? creationDate,
   }) async {
-    final result = await _channel.invokeMethod('saveImageToGallery', <String, dynamic>{
-      'imageBytes': imageBytes,
-      'quality': quality,
-      'name': name,
-      'isReturnImagePathOfIOS': isReturnImagePathOfIOS,
-      'creationDate': creationDate?.millisecondsSinceEpoch,
-    });
+    final result = await _channel
+        .invokeMethod('saveImageToGallery', <String, dynamic>{
+          'imageBytes': imageBytes,
+          'quality': quality,
+          'name': name,
+          'isReturnImagePathOfIOS': isReturnImagePathOfIOS,
+          'creationDate': creationDate?.millisecondsSinceEpoch,
+        });
     return result;
   }
 
@@ -39,12 +42,13 @@ class ImageGallerySaverPlus {
     bool isReturnPathOfIOS = false,
     DateTime? creationDate,
   }) async {
-    final result = await _channel.invokeMethod('saveFileToGallery', <String, dynamic>{
-      'file': file,
-      'name': name,
-      'isReturnPathOfIOS': isReturnPathOfIOS,
-      'creationDate': creationDate?.millisecondsSinceEpoch,
-    });
+    final result = await _channel
+        .invokeMethod('saveFileToGallery', <String, dynamic>{
+          'file': file,
+          'name': name,
+          'isReturnPathOfIOS': isReturnPathOfIOS,
+          'creationDate': creationDate?.millisecondsSinceEpoch,
+        });
     return result;
   }
 }
