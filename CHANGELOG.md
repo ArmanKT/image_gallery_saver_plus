@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.1.1
+
+- Updated the README dependency example to use version `5.1.0`.
+
 ## 5.1.0
 
 - Added an optional `creationDate` parameter to `saveImage` and `saveFile`.

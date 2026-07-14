@@ -11,7 +11,7 @@ An updated plugin enables users to download and save images and videos directly 
 To use this plugin, add `image_gallery_saver_plus` as a dependency in your pubspec.yaml file. For example:
 ```yaml
 dependencies:
-  image_gallery_saver_plus: ^4.0.1
+  image_gallery_saver_plus: ^5.1.1
 ```
 
 ## iOS
