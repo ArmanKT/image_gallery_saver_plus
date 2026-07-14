@@ -38,8 +38,6 @@ flutter_sdk_cache/
 /build/
 pubspec.lock
 
-ios/Podfile.lock
-*.lock
 *.freezed.lock
 
 **/GeneratedPluginRegistrant.swift
