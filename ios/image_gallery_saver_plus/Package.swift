@@ -1,28 +1,27 @@
 // swift-tools-version: 5.9
+// The swift-tools-version declares the minimum version of Swift required to build this package.
+
 import PackageDescription
 
 let package = Package(
     name: "image_gallery_saver_plus",
     platforms: [
-        .iOS("13.0")
+        .iOS("12.0")
     ],
     products: [
-        .library(
-            name: "image-gallery-saver-plus",
-            targets: ["image_gallery_saver_plus"]
-        )
+        .library(name: "image-gallery-saver-plus", targets: ["image_gallery_saver_plus"])
     ],
-    dependencies: [
-        .package(name: "FlutterFramework", path: "../FlutterFramework")
-    ],
+    dependencies: [],
     targets: [
         .target(
             name: "image_gallery_saver_plus",
-            dependencies: [
-                .product(name: "FlutterFramework", package: "FlutterFramework")
-            ],
+            dependencies: [],
             resources: [
-                .process("PrivacyInfo.xcprivacy")
+                // If your plugin requires a privacy manifest, for example if it uses any required
+                // reason APIs, update the PrivacyInfo.xcprivacy file to describe your plugin's
+                // privacy impact, and then uncomment these lines. For more information, see
+                // https://developer.apple.com/documentation/bundleresources/privacy_manifest_files
+                // .process("PrivacyInfo.xcprivacy"),
             ]
         )
     ]
