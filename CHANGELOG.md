@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.1.2
+
+- Migrated Android plugin to Built-in Kotlin (resolves Flutter deprecation warnings for KGP).
+
 ## 5.1.1
 
 - Updated the README dependency example to use version `5.1.0`.
