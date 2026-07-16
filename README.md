@@ -1,6 +1,5 @@
 # image_gallery_saver_plus
 
-
 [![pub package](https://img.shields.io/pub/v/image_gallery_saver_plus.svg)](https://pub.dartlang.org/packages/image_gallery_saver_plus)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://choosealicense.com/licenses/mit/)
 
@@ -9,52 +8,58 @@ An updated plugin enables users to download and save images and videos directly 
 ## Usage
 
 To use this plugin, add `image_gallery_saver_plus` as a dependency in your pubspec.yaml file. For example:
+
 ```yaml
 dependencies:
-  image_gallery_saver_plus: ^5.1.1
+  image_gallery_saver_plus: ^5.1.2
 ```
 
 ## iOS
+
 Your project need create with swift.
-Add the following keys to your Info.plist file, located in <project root>/ios/Runner/Info.plist:
-  
- ``` 
+Add the following keys to your Info.plist file, located in <project root></project>/ios/Runner/Info.plist:
+
+```
 <key>NSPhotoLibraryAddUsageDescription</key>
 <string>We need permission to save photos and videos to your library for your convenience.</string>
 
 <key>NSPhotoLibraryUsageDescription</key>
 <string>We need permission to access your photo library to view and select your photos and videos.</string>
- ```	
- 
- ##  Android
+```
+
+## Android
+
  You need to ask for storage permission to save an image to the gallery. You can handle the storage permission using [flutter_permission_handler](https://github.com/BaseflowIT/flutter-permission-handler).
  In Android version 10, Open the manifest file and add this line to your application tag
- ```
+
+```
  <application android:requestLegacyExternalStorage="true" .....>
- ```
+```
 
 ## API
 
 ### `ImageGallerySaverPlus.saveImage(...)`
+
 Save raw image bytes to the gallery.
 
-| Parameter | Type | Default | Description |
-| --- | --- | --- | --- |
-| `imageBytes` | `Uint8List` | required | The image bytes to save. |
-| `quality` | `int` | `80` | JPEG compression quality (0–100). |
-| `name` | `String?` | `null` | Optional file name. |
-| `isReturnImagePathOfIOS` | `bool` | `false` | Return the saved file path on iOS. |
-| `creationDate` | `DateTime?` | `null` | **iOS only.** Sets the asset's creation date shown in Photos. See below. |
+| Parameter                  | Type          | Default   | Description                                                                    |
+| -------------------------- | ------------- | --------- | ------------------------------------------------------------------------------ |
+| `imageBytes`             | `Uint8List` | required  | The image bytes to save.                                                       |
+| `quality`                | `int`       | `80`    | JPEG compression quality (0–100).                                             |
+| `name`                   | `String?`   | `null`  | Optional file name.                                                            |
+| `isReturnImagePathOfIOS` | `bool`      | `false` | Return the saved file path on iOS.                                             |
+| `creationDate`           | `DateTime?` | `null`  | **iOS only.** Sets the asset's creation date shown in Photos. See below. |
 
 ### `ImageGallerySaverPlus.saveFile(...)`
+
 Save a PNG/JPG/JPEG image or a video file to the gallery.
 
-| Parameter | Type | Default | Description |
-| --- | --- | --- | --- |
-| `file` | `String` | required | Path to the local file to save. |
-| `name` | `String?` | `null` | Optional file name. |
-| `isReturnPathOfIOS` | `bool` | `false` | Return the saved file path on iOS. |
-| `creationDate` | `DateTime?` | `null` | **iOS only.** Sets the asset's creation date shown in Photos (works for both images and videos). See below. |
+| Parameter             | Type          | Default   | Description                                                                                                       |
+| --------------------- | ------------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
+| `file`              | `String`    | required  | Path to the local file to save.                                                                                   |
+| `name`              | `String?`   | `null`  | Optional file name.                                                                                               |
+| `isReturnPathOfIOS` | `bool`      | `false` | Return the saved file path on iOS.                                                                                |
+| `creationDate`      | `DateTime?` | `null`  | **iOS only.** Sets the asset's creation date shown in Photos (works for both images and videos). See below. |
 
 ## Setting the creation date (iOS)
 
@@ -80,6 +85,7 @@ final result = await ImageGallerySaverPlus.saveFile(
 ```
 
 Notes:
+
 - **iOS only.** On iOS, providing a `creationDate` imports the asset through
   `PHPhotoLibrary` so the date is honored. When it is `null`, the legacy save
   path is used and the asset gets the current date.
@@ -87,8 +93,10 @@ Notes:
   the date it is saved.
 
 ## Example
+
 Saving an image from the internet, quality and name is option
-``` dart
+
+```dart
   _saveLocalImage() async {
     RenderRepaintBoundary boundary =
         _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
@@ -115,7 +123,8 @@ Saving an image from the internet, quality and name is option
 ```
 
 Saving file(ig: video/gif/others) from the internet
-``` dart
+
+```dart
   _saveNetworkGifFile() async {
     var appDocDir = await getTemporaryDirectory();
     String savePath = appDocDir.path + "/temp.gif";
@@ -139,3 +148,12 @@ Saving file(ig: video/gif/others) from the internet
     print(result);
   }
 ```
+
+## Contributors
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/ArmanKT"><img src="https://avatars.githubusercontent.com/u/38861462?v=4" width="100px;" alt=""/><br /><sub><b>Arman Khan Tonmoy</b></sub></a></td>
+    <td align="center"><a href="https://github.com/bousalem98"><img src="https://avatars.githubusercontent.com/u/61710794?v=4" width="100px;" alt=""/><br /><sub><b>Mohamed Salem</b></sub></a></td>
+  </tr>
+</table>
