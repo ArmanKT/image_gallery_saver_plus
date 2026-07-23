@@ -6,8 +6,8 @@ homepage: https://github.com/ArmanKT/image_gallery_saver_plus
 repository: https://github.com/ArmanKT/image_gallery_saver_plus
 
 environment:
-  sdk: ">=3.9.2 <4.0.0"
-  flutter: ">=3.35.6"
+  sdk: ^3.12.0
+  flutter: ">=3.44.0"
 
 dependencies:
   flutter:
